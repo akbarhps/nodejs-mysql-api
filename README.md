@@ -1,4 +1,4 @@
-# mysql-node-api-example
+# node-mysql-api example
 
 ## Project setup
 ```
