@@ -35,11 +35,7 @@ Product.update = async (params) => {
 }
 
 Product.delete = async (id) => {
-    const queries = [
-        `DELETE FROM products WHERE id = ?`,
-        `DELETE FROM products WHEREs id = ?`
-    ]
-    return await db.transaction(queries, [['axasd'], [id]])
+    return await db.exec(`DELETE FROM products WHERE id = ?`, [id]);
 }
 
 module.exports = Product;

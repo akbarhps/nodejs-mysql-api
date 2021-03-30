@@ -5,8 +5,11 @@ const app = express();
 
 app.use(express.json());
 
-const productsRouter = require('./routes/products');
-app.use('/products', productsRouter);
+const productsRoute = require('./routes/products');
+const usersRoute = require('./routes/users');
+
+app.use('/products', productsRoute);
+app.use('/users', usersRoute);
 
 /**
  * Error handler middleware

@@ -1,15 +1,15 @@
 const product = require('../controller/product.controller');
-const express = require('express');
-const router = express.Router();
+const {tokenValidator} = require('../utils/helper');
+const router = require('express').Router();
 
-router.get('/', product.findAll);
+router.get('/', tokenValidator, product.findAll);
 
-router.get('/:id', product.findById);
+router.get('/:id', tokenValidator, product.findById);
 
-router.post('/', product.create);
+router.post('/', tokenValidator, product.create);
 
-router.put('/:id', product.update);
+router.put('/:id', tokenValidator, product.update);
 
-router.delete('/:id', product.delete);
+router.delete('/:id', tokenValidator, product.delete);
 
 module.exports = router;
