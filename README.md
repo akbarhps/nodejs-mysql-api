@@ -1,11 +1,7 @@
-<<<<<<< HEAD
 # node-mysql-api
 
 ---
-Simple nodejs API with Express, MySQL, JWS, Joi, bcrypt
-=======
-# node-mysql-api example
->>>>>>> 7640b7bb0cbcb8e204dc5a32b3e413153fd7db5a
+Simple Nodejs API with Express, MySQL, JWS, Joi, bcrypt
 
 ## Project setup
 
@@ -24,7 +20,6 @@ npm install
 ```
 npm start
 ```
-<<<<<<< HEAD
 
 ## User Endpoints
 
@@ -137,5 +132,3 @@ npm start
   }
 }
 ```
-=======
->>>>>>> 7640b7bb0cbcb8e204dc5a32b3e413153fd7db5a
