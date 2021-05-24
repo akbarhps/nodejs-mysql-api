@@ -6,13 +6,14 @@ function getOffset(currentPage = 1) {
 }
 
 async function tokenValidator(req, res, next) {
-    const token = req.header('auth-token');
+    const token = req.header('X-Auth-Token');
     if (!token) {
         next({status: 401, message: "No Access"});
     }
 
     try {
-        req.uid = await jwt.verify(token, process.env.SECRET_TOKEN);
+        const payload = await jwt.verify(token, process.env.SECRET_TOKEN);
+        req.body['id'] = payload.uid;
         next();
     } catch (e) {
         next({status: 401, message: "Token is not valid!"});
