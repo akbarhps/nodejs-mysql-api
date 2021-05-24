@@ -1,0 +1,49 @@
+### Register user
+POST http://localhost:3000/users/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "example",
+  "email": "example@example.com",
+  "full_name": "example",
+  "password": "example234"
+}
+
+### Login user
+POST http://localhost:3000/users/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "example@example.com",
+  "password": "example234"
+}
+
+### Get all users
+GET http://localhost:3000/users?page=1
+X-Auth-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjIyLCJpYXQiOjE2MjE4NzE0Nzd9.RFx5cCnX2_wJt7tvyG3ZO_i9N6-HuGxO0TFnBD4-huk
+Accept: application/json
+
+### Get user by email or username
+GET http://localhost:3000/users/example
+X-Auth-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjIyLCJpYXQiOjE2MjE4NzE0Nzd9.RFx5cCnX2_wJt7tvyG3ZO_i9N6-HuGxO0TFnBD4-huk
+Accept: application/json
+
+### Edit user by id (id from auth token)
+PUT http://localhost:3000/users
+X-Auth-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjIyLCJpYXQiOjE2MjE4NzE0Nzd9.RFx5cCnX2_wJt7tvyG3ZO_i9N6-HuGxO0TFnBD4-huk
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "example",
+  "email" : "example@example.com",
+  "full_name": "example",
+  "password": "example"
+}
+
+### Delete user by username
+DELETE http://localhost:3000/users/example
+X-Auth-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjIyLCJpYXQiOjE2MjE4NzE0Nzd9.RFx5cCnX2_wJt7tvyG3ZO_i9N6-HuGxO0TFnBD4-huk
+Accept: application/json
