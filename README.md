@@ -6,7 +6,7 @@ Simple Nodejs API with Express, MySQL, JWS, Joi, bcrypt
 ## Project setup
 
 - Install dependencies  
-Type on console: 
+  Type on console:
 
 ```
 npm install
@@ -21,114 +21,161 @@ npm install
 npm start
 ```
 
-## User Endpoints
+# API Spec
 
-### POST : /users/login
+## Register User
 
-```json
+Request :
+
+- Method : POST
+- Endpoint : `/users`
+- Header :
+    - Content-Type: application/json
+    - Accept: application/json
+- Body :
+
+```json 
 {
-  "endpoint": "/users/login",
-  "method": "POST",
-  "request_body": {
-    "email": "example@example.com",
-    "password": "examplePassword"
-  },
-  "response": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTcwODgzNzl9.3tKwr4iszoCO0Q4V-T0eN09BUd-MM9WUz_ZaUUxt2nA"
-  }
+  "username": string,
+  "email": string,
+  "full_name": string,
+  "password": string
 }
 ```
 
-### POST : /users/register
+Response :
 
-```json
+```json 
 {
-  "endpoint": "/users/register",
-  "method": "POST",
-  "request_body": {
-    "username": "exampleUsername",
-    "full_name": "exampleName",
-    "email": "example@example.com",
-    "password": "some-random-password"
-  },
-  "response": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTcwODgzNzl9.3tKwr4iszoCO0Q4V-T0eN09BUd-MM9WUz_ZaUUxt2nA"
-  }
+    "token": string
 }
 ```
 
-### GET : /users
+## Login User
 
-```json
+Request :
+
+- Method : POST
+- Endpoint : `/users/login`
+- Header :
+    - Content-Type: application/json
+    - Accept: application/json
+  
+- Body :
+
+```json 
 {
-  "endpoint": "/users",
-  "method": "GET",
-  "request_header": {
-    "auth_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTcwODgzNzl9.3tKwr4iszoCO0Q4V-T0eN09BUd-MM9WUz_ZaUUxt2nA"
-  },
-  "response": [
-    {
-      "id": 1,
-      "username": "exampleUsername",
-      "full_name": "exampleName",
-      "email": "example@example.com",
-      "password": "$2a$10$WPU9DxVAU2faFayan6kCGuDkGCS7U288erMhCjGAHUAwMX8UAFH9G",
-      "create_date": "2021-03-30T06:25:24.000Z"
-    }
-  ]
+  "email": string,
+  "password": string
 }
 ```
 
-### GET : /users/:username
+Response :
 
-```json
+```json 
 {
-  "endpoint": "/users/exampleUsername",
-  "method": "GET",
-  "request_header": {
-    "auth_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTcwODgzNzl9.3tKwr4iszoCO0Q4V-T0eN09BUd-MM9WUz_ZaUUxt2nA"
-  },
-  "response": {
-    "id": 1,
-    "username": "exampleUsername",
-    "full_name": "exampleName",
-    "email": "example@example.com",
-    "password": "$2a$10$WPU9DxVAU2faFayan6kCGuDkGCS7U288erMhCjGAHUAwMX8UAFH9G",
-    "create_date": "2021-03-30T06:25:24.000Z"
-  }
+  "token": string
 }
 ```
 
-### PUT : /users/:username
+## Get All Users
 
-```json
-{
-  "endpoint": "/users/exampleUsername",
-  "method": "PUT",
-  "request_header": {
-    "auth_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTcwODgzNzl9.3tKwr4iszoCO0Q4V-T0eN09BUd-MM9WUz_ZaUUxt2nA"
+Request :
+
+- Method : GET
+- Endpoint : `/users`
+- Header :
+    - X-Auth-Token : "your secret token"
+    - Accept: application/json
+- Query Param :
+    - page : number
+
+Response :
+
+```json 
+[
+  {
+    "id": number,
+    "username": string,
+    "email": string,
+    "full_name": string,
+    "password": string
   },
-  "request_body": {
-    "email": "example2@example.com",
-    "full_name": "example 2 2 2"
-  },
-  "response": {
-    "message": "User successfully updated"
+  {
+    "id": number,
+    "username": string,
+    "email": string,
+    "full_name": string,
+    "password": string
   }
+]
+```
+
+## Get User by username or email
+
+Request :
+
+- Method : GET
+- Endpoint : `/users/{username/email}`
+- Header :
+    - X-Auth-Token : "your secret token"
+    - Accept: application/json
+
+Response :
+
+```json 
+{
+  "id": number,
+  "username": string,
+  "email": string,
+  "full_name": string,
+  "password": string
 }
 ```
 
-### DELETE : /users/:username
+## Update User
 
-```json
+Request :
+
+- Method : PUT
+- Endpoint : `/users`
+- Header :
+    - X-Auth-Token : "your secret token"
+    - Content-Type: application/json
+    - Accept: application/json
+- Body :
+
+```json 
 {
-  "endpoint": "/users/exampleUsername",
-  "method": "PUT",
-  "request_header": {
-    "auth_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTcwODgzNzl9.3tKwr4iszoCO0Q4V-T0eN09BUd-MM9WUz_ZaUUxt2nA"
-  },
-  "response": {
-    "message": "User successfully deleted"
-  }
+  "username": string,
+  "email": string,
+  "full_name": string,
+  "password": string
+}
+```
+
+Response :
+
+```json 
+{
+    "mesasage" : string
+}
+```
+
+## Delete User
+
+Request :
+
+- Method : DELETE
+- Endpoint : `/users/{username/email}`
+- Header :
+    - X-Auth-Token : "your secret token"
+    - Accept: application/json
+
+Response :
+
+```json 
+{
+    "mesasage" : string
 }
 ```
