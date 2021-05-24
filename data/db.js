@@ -8,7 +8,6 @@ async function exec(query, values) {
     return pool.execute(query, values);
 }
 
-/** See documentation from original answer */
 async function transaction(queries, queryValues) {
     if (queries.length !== queryValues.length) {
         return Promise.reject(
@@ -16,22 +15,18 @@ async function transaction(queries, queryValues) {
         )
     }
 
-    const queryPromises = [];
-    const connection = await mysql.createConnection(config.connectionConfig);
-
     try {
-        await connection.beginTransaction();
+        const queryPromises = [];
+        await pool.beginTransaction((error) => console.log(`Error beginTransaction: ${error}`));
         queries.forEach((query, index) => {
-            queryPromises.push(connection.query(query, queryValues[index]));
+            queryPromises.push(pool.query(query, queryValues[index]));
         })
         const results = await Promise.all(queryPromises);
-        await connection.commit();
+        await pool.commit();
         return results;
     } catch (err) {
-        await connection.rollback();
+        await pool.rollback(() => console.log('Transaction has been rollback'));
         return Promise.reject(err);
-    } finally {
-        await connection.end();
     }
 }
 
