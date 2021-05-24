@@ -3,10 +3,15 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Joi = require('joi');
 const db = require('../db');
+const toUnnamed = require('named-placeholders')();
 
 const tableName = 'users';
 
-const User = function () {
+const User = function (input) {
+    this.username = input.username;
+    this.full_name = input.full_name;
+    this.email = input.email;
+    this.password = input.password;
 }
 
 User.validate = (user) => {
@@ -29,9 +34,11 @@ User.validateLogin = (user) => {
 
 User.validateProfileUpdate = (user) => {
     const schema = Joi.object({
+        id: Joi.number().required(),
         full_name: Joi.string().required(),
         email: Joi.string().email().required(),
-        username: Joi.string().alphanum().min(6).required()
+        username: Joi.string().alphanum().min(6).required(),
+        password: Joi.string().min(6).required()
     });
     return schema.validate(user);
 }
@@ -45,39 +52,53 @@ User.validatePassword = async (password, hashedPassword) => {
 }
 
 User.generateToken = (uid) => {
-    return jwt.sign({uid}, process.env.SECRET_TOKEN);
+    return jwt.sign({uid: uid}, process.env.SECRET_TOKEN);
 }
 
 User.findAll = async (page = 0) => {
-    return await db.exec(`SELECT * FROM ${tableName} 
-    LIMIT ?, ?`, [page, '10']);
+    const query = toUnnamed(`SELECT * FROM ${tableName} 
+    LIMIT :page, :itemsPerPage`, {page, itemsPerPage: '10'});
+
+    return await db.exec(query[0], query[1]);
 }
 
 User.findById = async (id = '') => {
-    return await db.exec(`SELECT * FROM ${tableName} 
-    WHERE id = ?`, [id]);
+    const query = toUnnamed(`SELECT * FROM ${tableName} 
+    WHERE id = :id`, {id});
+
+    return await db.exec(query[0], query[1]);
 }
 
 User.findByUsernameOrEmail = async (usernameOrEmail = '') => {
-    return await db.exec(`SELECT * FROM ${tableName} 
-    WHERE username = ? OR email = ?`, [usernameOrEmail, usernameOrEmail]);
+    const query = toUnnamed(`SELECT * FROM ${tableName} 
+    WHERE username = :usernameOrEmail OR email = :usernameOrEmail`, {usernameOrEmail});
+
+    return await db.exec(query[0], query[1]);
 }
 
 User.create = async (user) => {
-    return await db.exec(`INSERT INTO ${tableName}(username, email, full_name, password) 
-    VALUES (?, ?, ?, ?)`, user);
+    const query = toUnnamed(`INSERT INTO ${tableName} (username, email, full_name, password) 
+    VALUES (:username, :email, :full_name, :password)`, user);
+
+    return await db.exec(query[0], query[1]);
 }
 
-User.updateProfile = async (user) => {
-    return await db.exec(`UPDATE ${tableName}
-    SET full_name   = ?,
-        email       = ?
-    WHERE username  = ?`, user);
+User.edit = async (user) => {
+    const query = toUnnamed(`UPDATE ${tableName}
+    SET username    = :username,
+        email       = :email, 
+        full_name   = :full_name,
+        password    = :password
+    WHERE id        = :id`, user);
+
+    return await db.exec(query[0], query[1]);
 }
 
 User.delete = async (usernameOrEmail = '') => {
-    return await db.exec(`DELETE FROM ${tableName} 
-    WHERE username = ? OR email = ?`, [usernameOrEmail, usernameOrEmail]);
+    const query = toUnnamed(`DELETE FROM ${tableName} 
+    WHERE username = :usernameOrEmail OR email = :usernameOrEmail`, {usernameOrEmail});
+
+    return await db.exec(query[0], query[1]);
 }
 
 module.exports = User;
