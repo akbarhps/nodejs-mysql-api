@@ -2,15 +2,16 @@ const helper = require('../utils/helper');
 const User = require('../data/models/user.model');
 
 exports.register = async (req, res, next) => {
-    const {value, error} = User.validate(req.body);
+    const user = new User(req.body);
+    const {value, error} = User.validate(user);
     if (error) {
         return next({statusCode: 400, message: error.details[0].message});
     }
 
     try {
         value.password = await User.hashPassword(value.password);
-        await User.create(Object.values(value));
-        const token = User.generateToken(value.id);
+        const result = await User.create(value);
+        const token = User.generateToken(result[0].insertId);
         res.status(201).json({token});
     } catch (e) {
         next({statusCode: 400, message: "Username or email already taken!"})
@@ -72,22 +73,21 @@ exports.findOne = async (req, res, next) => {
 }
 
 exports.update = async (req, res, next) => {
-    req.body['username'] = req.params['username'];
     const {value, error} = User.validateProfileUpdate(req.body);
     if (error) {
         return next({statusCode: 400, message: error.details[0].message});
     }
 
-    const userParams = buildUpdateParams(value);
     try {
-        const result = await User.updateProfile(userParams);
+        value.password = await User.hashPassword(value.password);
+        const result = await User.edit(value);
         if (result[0].affectedRows === 0) {
             return next({statusCode: 404, message: "User not found"});
         }
 
         res.json({message: "User successfully updated"});
     } catch (e) {
-        next({statusCode: 400, message: "Email already taken!"});
+        next({statusCode: 400, message: e.message});
     }
 }
 

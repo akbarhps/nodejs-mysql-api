@@ -10,7 +10,7 @@ router.get('/', tokenValidator, userController.findAll);
 
 router.get('/:username', tokenValidator, userController.findOne);
 
-router.put('/:username', tokenValidator, userController.update);
+router.put('/', tokenValidator, userController.update);
 
 router.delete('/:username', tokenValidator, userController.delete);
 
